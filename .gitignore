@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Env
+.venv/
+venv/
+
+# Django
+db.sqlite3
+*.log
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+
+# uv cache
+.uv/
+
+# tar.gz snapshots
+*.tar.gz
