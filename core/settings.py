@@ -25,10 +25,12 @@ SECRET_KEY = 'django-insecure-_pibbeet1sjk0(k8&dy*k5)m*d6d9v8-hq%683d(*9zyy1i0ov
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['220.158.18.153']
 
 
 # Application definition
+
+from .installed_apps_autogen import INSTALLED_APPS_AUTOGEN
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,7 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+
+    'tools.developments.apps.DevelopmentsConfig',
+] + INSTALLED_APPS_AUTOGEN
+
+STRUCTURE_CONCRETE_LAYER_NAMES = {
+    "impl",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

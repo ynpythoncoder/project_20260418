@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 
+# Python build系
+*.pyo
+*.pyd
+
 # Virtual Env
 .venv/
 venv/
@@ -9,6 +13,8 @@ venv/
 # Django
 db.sqlite3
 *.log
+/staticfiles/
+/media/
 
 # VSCode
 .vscode/
@@ -21,3 +27,16 @@ db.sqlite3
 
 # tar.gz snapshots
 *.tar.gz
+
+# 環境設定
+.env
+.env.*
+
+# IDE補足（VSCodeはすでにOK）
+*.swp
+
+# prompts
+prompts/
+
+# マイグレーションのキャッシュ
+*/migrations/__pycache__/
