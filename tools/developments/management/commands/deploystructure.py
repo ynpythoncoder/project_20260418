@@ -1,4 +1,8 @@
 # tools/developments/management/commands/deploystructure.py
+# File Path: tools/developments/management/commands/deploystructure.py
+# Programming Language: Python 3
+# Framework: Django
+# Dependencies: standard library, django
 
 from __future__ import annotations
 
@@ -12,7 +16,6 @@ from ..structure_tools import (
     extract_zip_to_temporary_dir,
     find_candidate_apps,
     read_manifest_project_name,
-    read_zip_root_dir_name,
     validate_project_identity,
     validate_zip_file_extension,
 )
@@ -38,36 +41,29 @@ class Command(BaseCommand):
 
         try:
             validate_zip_file_extension(zip_path)
-            zip_root_name = read_zip_root_dir_name(zip_path)
-            project_root, runtime_project_name = validate_project_identity(zip_path, zip_root_name)
         except Exception as exc:
             raise CommandError(str(exc)) from exc
-
-        report = DeployReport(
-            project_root=project_root,
-            zip_path=zip_path,
-            zip_root_name=zip_root_name,
-        )
-        report.checked.extend(
-            [
-                f"実行中プロジェクト: {runtime_project_name}",
-                f"ZIPファイル名: {zip_path.stem}",
-                f"ZIP内ルート: {zip_root_name}",
-            ]
-        )
 
         temp_dir = None
         try:
             temp_dir, extracted_root = extract_zip_to_temporary_dir(zip_path)
-            report.extracted_root = extracted_root
-
+            project_root, runtime_project_name = validate_project_identity(extracted_root)
             manifest_project_name = read_manifest_project_name(extracted_root)
-            if manifest_project_name is not None and manifest_project_name != runtime_project_name:
-                raise CommandError(
-                    "structure_manifest.json の project_name が一致しません。\n"
-                    f"- 実行中プロジェクト: {runtime_project_name}\n"
-                    f"- manifest project_name: {manifest_project_name}"
-                )
+
+            report = DeployReport(
+                project_root=project_root,
+                zip_path=zip_path,
+                zip_root_name=extracted_root.name,
+            )
+            report.extracted_root = extracted_root
+            report.checked.extend(
+                [
+                    f"実行中プロジェクト: {runtime_project_name}",
+                    f"ZIPファイル名: {zip_path.stem}",
+                    f"構造ルート名: {extracted_root.name}",
+                    f"manifest project_name: {manifest_project_name or '未指定'}",
+                ]
+            )
 
             candidates = find_candidate_apps(
                 extracted_project_root=extracted_root,
@@ -84,6 +80,8 @@ class Command(BaseCommand):
             report.created_files.extend(created_files)
             report.skipped.extend(skipped)
             report.warnings.extend(warnings)
+        except Exception as exc:
+            raise CommandError(str(exc)) from exc
         finally:
             if temp_dir is not None:
                 temp_dir.cleanup()

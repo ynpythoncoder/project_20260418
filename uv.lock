@@ -1,0 +1,19 @@
+version = 1
+revision = 3
+requires-python = ">=3.13"
+
+[[package]]
+name = "dev-tools"
+version = "0.1.0"
+source = { editable = "../dev_tools" }
+
+[[package]]
+name = "project-20260418"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "dev-tools" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "dev-tools", editable = "../dev_tools" }]
